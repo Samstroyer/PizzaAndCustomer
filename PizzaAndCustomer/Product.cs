@@ -20,23 +20,54 @@ class Product
 {
     public int x, y;
     public List<(int x, int y)> pepperoni;
-    public bool cheese, tomatoSauce;
+    public bool cheese, tomatoSauce, display;
+
+    Random? r;
 
     public Product()
     {
+        display = false;
         x = 100; y = 300;
         cheese = false; tomatoSauce = false;
         pepperoni = new();
     }
 
+    public Product((int x, int y) pos, (bool cheese, bool tomatoSauce) bases, int amountOfPepperoni)
+    {
+        display = true;
+        r = new();
+        x = pos.x; y = pos.y;
+        cheese = bases.cheese; tomatoSauce = bases.tomatoSauce;
+        pepperoni = new();
+
+        for (int i = 0; i < amountOfPepperoni; i++)
+        {
+            bool goodPlacement = false;
+            int x_, y_;
+
+            do
+            {
+                x_ = r.Next(-75, 75);
+                y_ = r.Next(-75, 75);
+                goodPlacement = Raylib.CheckCollisionPointCircle(new(x + x_, y + y_), new(x, y), 55);
+            } while (!goodPlacement);
+
+            pepperoni.Add((x_, y_));
+        }
+    }
+
     public void Update()
     {
         Draw();
-        MovePizza();
 
-        if (Raylib.CheckCollisionCircles(new(440, 140), 100, new(x, y), 70))
+        if (!display)
         {
-            AddPepperoni();
+            MovePizza();
+
+            if (Raylib.CheckCollisionCircles(new(440, 140), 100, new(x, y), 70))
+            {
+                AddPepperoni();
+            }
         }
     }
 

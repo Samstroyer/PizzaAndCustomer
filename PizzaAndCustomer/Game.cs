@@ -8,6 +8,8 @@ class Game
 
     List<Product> pizzas;
 
+    List<Product> displayPizzas;
+
     private enum Room
     {
         Cashier,
@@ -16,8 +18,10 @@ class Game
 
     public Game()
     {
-        currentRoom = Room.Kitchen;
+        currentRoom = Room.Cashier;
         pizzas = new();
+        displayPizzas = new();
+        displayPizzas.Add(new Product((450, 100), (true, true), 10));
     }
 
     public void Run()
@@ -34,6 +38,10 @@ class Game
             {
                 case Room.Cashier:
                     Cashier();
+                    foreach (Product p in displayPizzas)
+                    {
+                        p.Update();
+                    }
                     break;
 
 
@@ -47,6 +55,7 @@ class Game
 
 
                 default:
+
                     currentRoom = Room.Cashier;
                     break;
             }
@@ -105,7 +114,10 @@ class Game
 
     public void Cashier()
     {
-
+        Raylib.DrawRectangle(100, 400, 500, 050, Color.WHITE);
+        Raylib.DrawRectangleLines(100, 400, 500, 050, Color.BLACK);
+        Raylib.DrawRectangle(150, 450, 450, 150, Color.LIGHTGRAY);
+        Raylib.DrawRectangleLines(150, 450, 450, 150, Color.BLACK);
     }
 
     public void Orders()
