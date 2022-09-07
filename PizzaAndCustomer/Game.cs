@@ -10,6 +10,8 @@ class Game
 
     List<Product> displayPizzas;
 
+    List<Customer> customers;
+
     private enum Room
     {
         Cashier,
@@ -21,7 +23,16 @@ class Game
         currentRoom = Room.Cashier;
         pizzas = new();
         displayPizzas = new();
-        displayPizzas.Add(new Product((450, 100), (true, true), 10));
+        displayPizzas.Add(new Product((150, 100), (true, true), 10));
+
+        customers = new();
+        customers.Add(new());
+        customers.Add(new());
+        customers.Add(new());
+        customers.Add(new());
+        customers.Add(new());
+
+        //THERE WILL ONLY BE FIVE!
     }
 
     public void Run()
@@ -37,6 +48,10 @@ class Game
             switch (currentRoom)
             {
                 case Room.Cashier:
+                    foreach (Customer c in customers)
+                    {
+                        c.DrawCustomer();
+                    }
                     Cashier();
                     foreach (Product p in displayPizzas)
                     {
@@ -114,10 +129,15 @@ class Game
 
     public void Cashier()
     {
+        // Counter
         Raylib.DrawRectangle(100, 400, 500, 050, Color.WHITE);
         Raylib.DrawRectangleLines(100, 400, 500, 050, Color.BLACK);
         Raylib.DrawRectangle(150, 450, 450, 150, Color.LIGHTGRAY);
         Raylib.DrawRectangleLines(150, 450, 450, 150, Color.BLACK);
+
+        // Menu-board
+        Raylib.DrawRectangle(65, 15, 170, 170, Color.BLACK);
+        Raylib.DrawRectangle(70, 20, 160, 160, Color.DARKGRAY);
     }
 
     public void Orders()

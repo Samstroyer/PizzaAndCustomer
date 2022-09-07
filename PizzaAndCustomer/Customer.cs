@@ -4,16 +4,31 @@ using Raylib_cs;
 class Customer
 {
     Vector2 pos;
-    List<(int xCenter, int yCenter)>? characters;
+    (bool tomatoSauce, bool cheese, int slices) ingredientReq;
+    Random? r;
 
     public Customer(int xCenter, int yCenter)
     {
         pos = new(xCenter, yCenter);
     }
 
-    public Customer(List<(int xCenter, int yCenter)> c_)
+    public Customer()
     {
-        characters = c_;
+        ingredientReq = new();
+        r = new();
+        pos = new(400, 300);
+
+        if (r.NextDouble() < 0.5)
+        {
+            ingredientReq.tomatoSauce = true;
+        }
+
+        if (r.NextDouble() < 0.5)
+        {
+            ingredientReq.cheese = true;
+        }
+
+        ingredientReq.slices = r.Next(15);
     }
 
     public void DrawCustomer()
