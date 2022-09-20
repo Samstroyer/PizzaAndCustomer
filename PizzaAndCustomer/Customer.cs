@@ -57,4 +57,25 @@ class Customer
         Raylib.DrawCircle(x, y + 82, 6, Color.RED);
         Raylib.DrawRectangle(x - 1, y + 64, 2, 16, Color.BLACK);
     }
+
+    public Product Order()
+    {
+        Product p = new();
+
+        (double cheese, double sauce) toppings = new();
+        toppings.cheese = r.NextDouble();
+        toppings.sauce = r.NextDouble();
+
+        if (toppings.cheese > 0.5) { p.cheese = true; } else { p.cheese = false; }
+        if (toppings.sauce > 0.5) { p.tomatoSauce = true; } else { p.tomatoSauce = false; }
+
+        int circles = r.Next(10);
+
+        for (int i = 0; i < circles; i++)
+        {
+            p.pepperoni.Add((0, 0));
+        }
+
+        return p;
+    }
 }

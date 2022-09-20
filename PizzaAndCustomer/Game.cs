@@ -10,12 +10,17 @@ class Game
 
     List<Product> displayPizzas;
 
-    List<Customer> customers;
+    Customer pizzaCustomer;
+
+    Product customerOrder;
+
+    int ordersCompleted = 0;
 
     private enum Room
     {
         Cashier,
-        Kitchen
+        Kitchen,
+        Orders
     }
 
     public Game()
@@ -25,14 +30,8 @@ class Game
         displayPizzas = new();
         displayPizzas.Add(new Product((150, 100), (true, true), 10));
 
-        customers = new();
-        customers.Add(new());
-        customers.Add(new());
-        customers.Add(new());
-        customers.Add(new());
-        customers.Add(new());
-
-        //THERE WILL ONLY BE FIVE!
+        pizzaCustomer = new();
+        customerOrder = pizzaCustomer.Order();
     }
 
     public void Run()
@@ -48,10 +47,7 @@ class Game
             switch (currentRoom)
             {
                 case Room.Cashier:
-                    foreach (Customer c in customers)
-                    {
-                        c.DrawCustomer();
-                    }
+                    pizzaCustomer.DrawCustomer();
                     Cashier();
                     foreach (Product p in displayPizzas)
                     {
@@ -68,6 +64,10 @@ class Game
                     }
                     break;
 
+                case Room.Orders:
+                    Orders();
+                    break;
+
 
                 default:
 
@@ -75,7 +75,6 @@ class Game
                     break;
             }
 
-            Orders();
             Overlay();
 
             Raylib.EndDrawing();
@@ -125,6 +124,34 @@ class Game
 
         Raylib.DrawCircle(440, 140, 100, Colors.pepperoniZone);
         Raylib.DrawText("Pepperoni\nZone", 390, 110, 24, Color.RED);
+
+
+        Raylib.DrawRectangle(450, 450, 75, 75, Color.LIME);
+        Raylib.DrawText("Send", 452, 468, 16, Color.BLACK);
+        if (Raylib.CheckCollisionPointRec(mouseCords, new(450, 450, 75, 75)))
+        {
+            Raylib.DrawRectangle(450, 450, 75, 75, Colors.hoverColor);
+            if (Raylib.IsMouseButtonPressed(0))
+            {
+                for (int i = pizzas.Count - 1; i >= 0; i--)
+                {
+                    if (Raylib.CheckCollisionCircleRec(new(pizzas[i].x, pizzas[i].y), 75, new(450, 450, 75, 75)))
+                    {
+                        if (customerOrder.cheese == pizzas[i].cheese && customerOrder.pepperoni.Count == pizzas[i].pepperoni.Count && customerOrder.tomatoSauce == pizzas[i].tomatoSauce)
+                        {
+                            pizzas.RemoveAt(i);
+                            customerOrder = pizzaCustomer.Order();
+                            ordersCompleted++;
+                            Console.WriteLine(ordersCompleted);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Order is wrong!");
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void Cashier()
@@ -142,7 +169,15 @@ class Game
 
     public void Orders()
     {
+        (int width, int height) dimensions = (Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
+        Raylib.DrawRectangle(0, 0, dimensions.width, dimensions.height, Color.DARKGRAY);
 
+        Raylib.DrawRectangle((dimensions.width / 2) - 100, 100, 200, 200, Color.BLACK);
+        Raylib.DrawRectangleLines((dimensions.width / 2) - 105, 95, 210, 210, Color.GRAY);
+
+        Raylib.DrawText($"# orders completed: {ordersCompleted}", 10, 10, 24, Color.GREEN);
+
+        Raylib.DrawText($"Cheese: {customerOrder.cheese},\nSauce: {customerOrder.tomatoSauce},\nSlices: {customerOrder.pepperoni.Count}", dimensions.width / 2 - 90, 112, 24, Color.WHITE);
     }
 
     public void Overlay()
@@ -168,6 +203,17 @@ class Game
             if (Raylib.IsMouseButtonPressed(0))
             {
                 currentRoom = Room.Kitchen;
+            }
+        }
+
+        Raylib.DrawRectangle(275, 525, 100, 50, Color.BLUE);
+        Raylib.DrawText("Orders", 277, 537, 26, Color.BLACK);
+        if (Raylib.CheckCollisionPointRec(mouseCords, new(275, 525, 100, 50)))
+        {
+            Raylib.DrawRectangle(275, 525, 100, 50, Colors.hoverColor);
+            if (Raylib.IsMouseButtonPressed(0))
+            {
+                currentRoom = Room.Orders;
             }
         }
 
